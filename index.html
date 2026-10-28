@@ -79,6 +79,16 @@ header.top .hbtn{font-size:14px;opacity:.85;padding:6px 2px;white-space:nowrap}
 .row .th img{width:100%;height:100%;object-fit:cover}
 .row .cnt{position:absolute;right:4px;top:4px;background:var(--bottle);color:var(--amber);min-width:24px;height:24px;border-radius:12px;display:grid;place-items:center;font-size:12px;font-weight:700}
 .row .cnt.solo{position:static}
+.list.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding-top:6px}
+@media (min-width:640px){.list.tiles{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.list.tiles .notice,.list.tiles .sec{grid-column:1/-1}
+.row.tile{display:flex;flex-direction:column;align-items:stretch;gap:4px;text-align:left;border-bottom:1px solid var(--line);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 6px 8px;position:relative}
+.tile:active{transform:scale(.97)}
+.tile .ph{aspect-ratio:1;max-width:100%;border-radius:8px;overflow:hidden;background:#fff}
+.tile .ph img{width:100%;height:100%;object-fit:cover}
+.tile b{font-size:13px;line-height:1.3;font-weight:700;min-height:2.6em}
+.tile em{font-style:normal;font-size:12px;font-weight:700;color:var(--price)}
+.tile .cnt{position:absolute;right:6px;top:6px;background:var(--bottle);color:var(--amber);min-width:24px;height:24px;border-radius:12px;display:grid;place-items:center;font-size:12px;font-weight:700}
 .sec{font-family:var(--display);font-size:18px;color:var(--bottle);padding-top:18px}
 .notice{font-size:12px;color:var(--muted);background:#FFF6DF;border-radius:10px;padding:10px 12px;margin-top:12px;line-height:1.5}
 
@@ -168,7 +178,7 @@ header.top .hbtn{font-size:14px;opacity:.85;padding:6px 2px;white-space:nowrap}
 <section class="screen" id="start">
   <canvas class="bubbles" id="bubbles" aria-hidden="true"></canvas>
   <div class="sign"><small>오늘 회식은 어디로?</small>회식장소<br>픽!</div>
-  <div class="sub">10곳 중에 골라서 메뉴 주문까지 한 번에</div>
+  <div class="sub">11곳 중에 골라서 메뉴 주문까지 한 번에</div>
   <button class="tap" id="go">장소 고르러 가기</button>
 </section>
 
@@ -309,7 +319,7 @@ header.top .hbtn{font-size:14px;opacity:.85;padding:6px 2px;white-space:nowrap}
 </div>
 
 <script>
-const IMG = {"bbq-0": "img/bbq-0.jpg", "bbq-1": "img/bbq-1.jpg", "bbq-10": "img/bbq-10.jpg", "bbq-11": "img/bbq-11.jpg", "bbq-2": "img/bbq-2.jpg", "bbq-3": "img/bbq-3.jpg", "bbq-4": "img/bbq-4.jpg", "bbq-5": "img/bbq-5.jpg", "bbq-6": "img/bbq-6.jpg", "bbq-7": "img/bbq-7.jpg", "bbq-8": "img/bbq-8.jpg", "bbq-9": "img/bbq-9.jpg", "beer": "img/beer.jpg", "bulnori-0": "img/bulnori-0.jpg", "bulnori-1": "img/bulnori-1.jpg", "bulnori-2": "img/bulnori-2.jpg", "cider": "img/cider.jpg", "cola": "img/cola.jpg", "deunggalbi-0": "img/deunggalbi-0.jpg", "deunggalbi-1": "img/deunggalbi-1.jpg", "deunggalbi-2": "img/deunggalbi-2.jpg", "dolgopchang1-0": "img/dolgopchang1-0.jpg", "dolgopchang2-0": "img/dolgopchang2-0.jpg", "jangdaebak-0": "img/jangdaebak-0.jpg", "jangdaebak-1": "img/jangdaebak-1.jpg", "jangdaebak-2": "img/jangdaebak-2.jpg", "jangdaebak-3": "img/jangdaebak-3.jpg", "jangdaebak-4": "img/jangdaebak-4.jpg", "jokbal-0": "img/jokbal-0.jpg", "jokbal-1": "img/jokbal-1.jpg", "jokbal-2": "img/jokbal-2.jpg", "jokbal-3": "img/jokbal-3.jpg", "jokbal-4": "img/jokbal-4.jpg", "kkakdugi-0": "img/kkakdugi-0.jpg", "kkakdugi-1": "img/kkakdugi-1.jpg", "kkakdugi-2": "img/kkakdugi-2.jpg", "kkakdugi-3": "img/kkakdugi-3.jpg", "rep-bbq": "img/rep-bbq.jpg", "rep-bulnori": "img/rep-bulnori.jpg", "rep-deunggalbi": "img/rep-deunggalbi.jpg", "rep-dolgopchang": "img/rep-dolgopchang.jpg", "rep-jangdaebak": "img/rep-jangdaebak.jpg", "rep-jokbal": "img/rep-jokbal.jpg", "rep-kkakdugi": "img/rep-kkakdugi.jpg", "rep-saebyeok": "img/rep-saebyeok.jpg", "rep-shabu": "img/rep-shabu.jpg", "rep-yukogam": "img/rep-yukogam.jpg", "rep-yukogam2": "img/rep-yukogam2.jpg", "shabu-0": "img/shabu-0.jpg", "shabu-1": "img/shabu-1.jpg", "shabu-2": "img/shabu-2.jpg", "soju": "img/soju.jpg", "yukogam-0": "img/yukogam-0.jpg", "yukogam-1": "img/yukogam-1.jpg", "yukogam-2": "img/yukogam-2.jpg", "yukogam-3": "img/yukogam-3.jpg", "yukogam-4": "img/yukogam-4.jpg", "yukogam-5": "img/yukogam-5.jpg", "yukogam-6": "img/yukogam-6.jpg"};
+const IMG = {"bbq-0": "img/bbq-0.jpg", "bbq-1": "img/bbq-1.jpg", "bbq-10": "img/bbq-10.jpg", "bbq-11": "img/bbq-11.jpg", "bbq-2": "img/bbq-2.jpg", "bbq-3": "img/bbq-3.jpg", "bbq-4": "img/bbq-4.jpg", "bbq-5": "img/bbq-5.jpg", "bbq-6": "img/bbq-6.jpg", "bbq-7": "img/bbq-7.jpg", "bbq-8": "img/bbq-8.jpg", "bbq-9": "img/bbq-9.jpg", "beer": "img/beer.jpg", "bulnori-0": "img/bulnori-0.jpg", "bulnori-1": "img/bulnori-1.jpg", "bulnori-2": "img/bulnori-2.jpg", "cider": "img/cider.jpg", "cola": "img/cola.jpg", "deunggalbi-0": "img/deunggalbi-0.jpg", "deunggalbi-1": "img/deunggalbi-1.jpg", "deunggalbi-2": "img/deunggalbi-2.jpg", "dolgopchang1-0": "img/dolgopchang1-0.jpg", "dolgopchang2-0": "img/dolgopchang2-0.jpg", "jangdaebak-0": "img/jangdaebak-0.jpg", "jangdaebak-1": "img/jangdaebak-1.jpg", "jangdaebak-2": "img/jangdaebak-2.jpg", "jangdaebak-3": "img/jangdaebak-3.jpg", "jangdaebak-4": "img/jangdaebak-4.jpg", "jokbal-0": "img/jokbal-0.jpg", "jokbal-1": "img/jokbal-1.jpg", "jokbal-2": "img/jokbal-2.jpg", "jokbal-3": "img/jokbal-3.jpg", "jokbal-4": "img/jokbal-4.jpg", "kkakdugi-0": "img/kkakdugi-0.jpg", "kkakdugi-1": "img/kkakdugi-1.jpg", "kkakdugi-2": "img/kkakdugi-2.jpg", "kkakdugi-3": "img/kkakdugi-3.jpg", "rep-bbq": "img/rep-bbq.jpg", "rep-bulnori": "img/rep-bulnori.jpg", "rep-deunggalbi": "img/rep-deunggalbi.jpg", "rep-dolgopchang": "img/rep-dolgopchang.jpg", "rep-jangdaebak": "img/rep-jangdaebak.jpg", "rep-jokbal": "img/rep-jokbal.jpg", "rep-kkakdugi": "img/rep-kkakdugi.jpg", "rep-saebyeok": "img/rep-saebyeok.jpg", "rep-shabu": "img/rep-shabu.jpg", "rep-suan": "img/rep-suan.jpg", "rep-yukogam": "img/rep-yukogam.jpg", "rep-yukogam2": "img/rep-yukogam2.jpg", "shabu-0": "img/shabu-0.jpg", "shabu-1": "img/shabu-1.jpg", "shabu-2": "img/shabu-2.jpg", "soju": "img/soju.jpg", "sushi-0": "img/sushi-0.jpg", "sushi-1": "img/sushi-1.jpg", "sushi-10": "img/sushi-10.jpg", "sushi-11": "img/sushi-11.jpg", "sushi-12": "img/sushi-12.jpg", "sushi-13": "img/sushi-13.jpg", "sushi-14": "img/sushi-14.jpg", "sushi-15": "img/sushi-15.jpg", "sushi-16": "img/sushi-16.jpg", "sushi-17": "img/sushi-17.jpg", "sushi-18": "img/sushi-18.jpg", "sushi-19": "img/sushi-19.jpg", "sushi-2": "img/sushi-2.jpg", "sushi-20": "img/sushi-20.jpg", "sushi-21": "img/sushi-21.jpg", "sushi-22": "img/sushi-22.jpg", "sushi-23": "img/sushi-23.jpg", "sushi-24": "img/sushi-24.jpg", "sushi-25": "img/sushi-25.jpg", "sushi-26": "img/sushi-26.jpg", "sushi-27": "img/sushi-27.jpg", "sushi-28": "img/sushi-28.jpg", "sushi-29": "img/sushi-29.jpg", "sushi-3": "img/sushi-3.jpg", "sushi-30": "img/sushi-30.jpg", "sushi-31": "img/sushi-31.jpg", "sushi-32": "img/sushi-32.jpg", "sushi-33": "img/sushi-33.jpg", "sushi-34": "img/sushi-34.jpg", "sushi-35": "img/sushi-35.jpg", "sushi-36": "img/sushi-36.jpg", "sushi-37": "img/sushi-37.jpg", "sushi-38": "img/sushi-38.jpg", "sushi-39": "img/sushi-39.jpg", "sushi-4": "img/sushi-4.jpg", "sushi-40": "img/sushi-40.jpg", "sushi-41": "img/sushi-41.jpg", "sushi-42": "img/sushi-42.jpg", "sushi-43": "img/sushi-43.jpg", "sushi-44": "img/sushi-44.jpg", "sushi-45": "img/sushi-45.jpg", "sushi-46": "img/sushi-46.jpg", "sushi-47": "img/sushi-47.jpg", "sushi-48": "img/sushi-48.jpg", "sushi-49": "img/sushi-49.jpg", "sushi-5": "img/sushi-5.jpg", "sushi-50": "img/sushi-50.jpg", "sushi-51": "img/sushi-51.jpg", "sushi-52": "img/sushi-52.jpg", "sushi-53": "img/sushi-53.jpg", "sushi-54": "img/sushi-54.jpg", "sushi-55": "img/sushi-55.jpg", "sushi-56": "img/sushi-56.jpg", "sushi-57": "img/sushi-57.jpg", "sushi-58": "img/sushi-58.jpg", "sushi-59": "img/sushi-59.jpg", "sushi-6": "img/sushi-6.jpg", "sushi-60": "img/sushi-60.jpg", "sushi-61": "img/sushi-61.jpg", "sushi-62": "img/sushi-62.jpg", "sushi-63": "img/sushi-63.jpg", "sushi-64": "img/sushi-64.jpg", "sushi-65": "img/sushi-65.jpg", "sushi-66": "img/sushi-66.jpg", "sushi-67": "img/sushi-67.jpg", "sushi-68": "img/sushi-68.jpg", "sushi-69": "img/sushi-69.jpg", "sushi-7": "img/sushi-7.jpg", "sushi-70": "img/sushi-70.jpg", "sushi-71": "img/sushi-71.jpg", "sushi-72": "img/sushi-72.jpg", "sushi-73": "img/sushi-73.jpg", "sushi-74": "img/sushi-74.jpg", "sushi-75": "img/sushi-75.jpg", "sushi-76": "img/sushi-76.jpg", "sushi-77": "img/sushi-77.jpg", "sushi-78": "img/sushi-78.jpg", "sushi-79": "img/sushi-79.jpg", "sushi-8": "img/sushi-8.jpg", "sushi-80": "img/sushi-80.jpg", "sushi-81": "img/sushi-81.jpg", "sushi-82": "img/sushi-82.jpg", "sushi-83": "img/sushi-83.jpg", "sushi-84": "img/sushi-84.jpg", "sushi-85": "img/sushi-85.jpg", "sushi-86": "img/sushi-86.jpg", "sushi-9": "img/sushi-9.jpg", "yukogam-0": "img/yukogam-0.jpg", "yukogam-1": "img/yukogam-1.jpg", "yukogam-2": "img/yukogam-2.jpg", "yukogam-3": "img/yukogam-3.jpg", "yukogam-4": "img/yukogam-4.jpg", "yukogam-5": "img/yukogam-5.jpg", "yukogam-6": "img/yukogam-6.jpg"};
 const im = k => IMG[k] ? `<img src="${IMG[k]}" alt="">` : "";
 
 const PLACES = [
@@ -413,6 +423,108 @@ const PLACES = [
     {n:"[NEW] 필크런치 소떡 세트", d:"필크런치 + BBQ소떡(자소만맛) + 볼케이노 핫소스", p:32000, img:"bbq-9"},
     {n:"[NEW] 필크런치 소스 세트", d:"필크런치 + 볼케이노 핫소스", p:29000, img:"bbq-10"},
     {n:"땡쇼크", d:"땡초의 강렬한 맛과 진한 숯불 향의 BBQ 특제 양념", p:25000, img:"bbq-11"}]},
+  {id:"suan", n:"수안초밥", cat:"회전초밥", tiles:1, rep:"rep-suan", sub:"안성아양점 · 접시당 균일가 1,890원", note:"모든 초밥은 접시당 균일가 1,890원입니다. 럭셔리 초밥은 회전 레일에 없고 주문으로만 나와요 (3,900원).", drinks:[
+    {n:"백화수복", p:5000},
+    {n:"청하", p:5000},
+    {n:"탄산음료 (제로·환타)", d:"콜라·사이다 외 탄산음료", p:2000, opt:["제로콜라","제로사이다","환타파인"]},
+    {n:"뽀로로음료", p:1890}], menu:[
+    {sec:"럭셔리 초밥 (주문으로만 제공)"},
+    {n:"성게알초밥", p:3900, img:"sushi-82", unit:"접시"},
+    {n:"메까도로초밥", p:3900, img:"sushi-83", unit:"접시"},
+    {n:"참치배꼽초밥", p:3900, img:"sushi-84", unit:"접시"},
+    {n:"참치도로초밥", p:3900, img:"sushi-85", unit:"접시"},
+    {n:"채끝등심초밥", p:3900, img:"sushi-86", unit:"접시"},
+    {sec:"활어 초밥"},
+    {n:"계절 활어", p:1890, img:"sushi-0", unit:"접시"},
+    {n:"광어", p:1890, img:"sushi-1", unit:"접시"},
+    {n:"활어묵은지", p:1890, img:"sushi-2", unit:"접시"},
+    {n:"광어지느러미", p:1890, img:"sushi-3", unit:"접시"},
+    {n:"도미", p:1890, img:"sushi-4", unit:"접시"},
+    {n:"도미마쓰까와", p:1890, img:"sushi-5", unit:"접시"},
+    {n:"생연어", p:1890, img:"sushi-6", unit:"접시"},
+    {n:"연어양파", p:1890, img:"sushi-7", unit:"접시"},
+    {n:"연어뱃살", p:1890, img:"sushi-8", unit:"접시"},
+    {n:"눈다랑어", p:1890, img:"sushi-9", unit:"접시"},
+    {n:"황새치묵은지", p:1890, img:"sushi-10", unit:"접시"},
+    {n:"광어명이", p:1890, img:"sushi-11", unit:"접시"},
+    {n:"육회", p:1890, img:"sushi-12", unit:"접시"},
+    {n:"한우육사시미", p:1890, img:"sushi-13", unit:"접시"},
+    {n:"유부", p:1890, img:"sushi-14", unit:"접시"},
+    {n:"회김치", p:1890, img:"sushi-15", unit:"접시"},
+    {n:"연어타코", p:1890, img:"sushi-16", unit:"접시"},
+    {n:"연어육회", p:1890, img:"sushi-17", unit:"접시"},
+    {n:"초새우", p:1890, img:"sushi-18", unit:"접시"},
+    {n:"간장새우", p:1890, img:"sushi-19", unit:"접시"},
+    {n:"양념새우", p:1890, img:"sushi-20", unit:"접시"},
+    {n:"생새우", p:1890, img:"sushi-21", unit:"접시"},
+    {n:"가리비", p:1890, img:"sushi-22", unit:"접시"},
+    {n:"피뿔고동", p:1890, img:"sushi-23", unit:"접시"},
+    {n:"전복", p:1890, img:"sushi-24", unit:"접시"},
+    {n:"문어", p:1890, img:"sushi-25", unit:"접시"},
+    {n:"소라묵은지", p:1890, img:"sushi-26", unit:"접시"},
+    {n:"홍민어", p:1890, img:"sushi-27", unit:"접시"},
+    {n:"묵은지 육회", p:1890, img:"sushi-28", unit:"접시"},
+    {n:"계란", p:1890, img:"sushi-29", unit:"접시"},
+    {sec:"구운 초밥"},
+    {n:"연어스테이크", p:1890, img:"sushi-30", unit:"접시"},
+    {n:"치즈가리비", p:1890, img:"sushi-31", unit:"접시"},
+    {n:"유부스테이크", p:1890, img:"sushi-32", unit:"접시"},
+    {n:"가리비스테이크", p:1890, img:"sushi-33", unit:"접시"},
+    {n:"참치스테이크", p:1890, img:"sushi-34", unit:"접시"},
+    {n:"계란베이컨", p:1890, img:"sushi-35", unit:"접시"},
+    {n:"계란마요", p:1890, img:"sushi-36", unit:"접시"},
+    {n:"육회스테이크", p:1890, img:"sushi-37", unit:"접시"},
+    {n:"새우스테이크", p:1890, img:"sushi-38", unit:"접시"},
+    {n:"구운새우", p:1890, img:"sushi-39", unit:"접시"},
+    {n:"치즈새우", p:1890, img:"sushi-40", unit:"접시"},
+    {n:"계란새우", p:1890, img:"sushi-41", unit:"접시"},
+    {n:"베이컨", p:1890, img:"sushi-42", unit:"접시"},
+    {n:"양념도미", p:1890, img:"sushi-43", unit:"접시"},
+    {n:"새우베이컨", p:1890, img:"sushi-44", unit:"접시"},
+    {n:"소고기스테이크", p:1890, img:"sushi-45", unit:"접시"},
+    {n:"민물장어", p:1890, img:"sushi-46", unit:"접시"},
+    {n:"닭꼬치", p:1890, img:"sushi-47", unit:"접시"},
+    {n:"피뿔고동스테이크", p:1890, img:"sushi-48", unit:"접시"},
+    {n:"가리비관자스테이크", p:1890, img:"sushi-49", unit:"접시"},
+    {sec:"롤초밥"},
+    {n:"칠리 새우 롤", p:1890, img:"sushi-50", unit:"접시"},
+    {n:"캘리포니아 롤", p:1890, img:"sushi-51", unit:"접시"},
+    {n:"새우튀김 롤", p:1890, img:"sushi-52", unit:"접시"},
+    {n:"소고기스테이크 롤", p:1890, img:"sushi-53", unit:"접시"},
+    {n:"후토마끼", p:1890, img:"sushi-54", unit:"접시"},
+    {n:"연어롤", p:1890, img:"sushi-55", unit:"접시"},
+    {n:"치즈새우 롤", p:1890, img:"sushi-56", unit:"접시"},
+    {sec:"군함"},
+    {n:"날치알 군함", p:1890, img:"sushi-57", unit:"접시"},
+    {n:"마끼", p:1890, img:"sushi-58", unit:"접시"},
+    {n:"안키모 군함", p:1890, img:"sushi-59", unit:"접시"},
+    {n:"연어 군함", p:1890, img:"sushi-60", unit:"접시"},
+    {n:"연어 마끼", p:1890, img:"sushi-61", unit:"접시"},
+    {n:"육회 마끼", p:1890, img:"sushi-62", unit:"접시"},
+    {n:"타코와사비 군함", p:1890, img:"sushi-63", unit:"접시"},
+    {n:"육회 군함", p:1890, img:"sushi-64", unit:"접시"},
+    {n:"단새우 안키모", p:1890, img:"sushi-65", unit:"접시"},
+    {n:"육회 묵은지", p:1890, img:"sushi-66", unit:"접시"},
+    {n:"가리비 안키모", p:1890, img:"sushi-67", unit:"접시"},
+    {n:"홍새우 계란", p:1890, img:"sushi-68", unit:"접시"},
+    {n:"육회 타코", p:1890, img:"sushi-69", unit:"접시"},
+    {sec:"튀김"},
+    {n:"새우", p:1890, img:"sushi-70", unit:"접시"},
+    {n:"게다리", p:1890, img:"sushi-71", unit:"접시"},
+    {n:"치킨가라아게", p:1890, img:"sushi-72", unit:"접시"},
+    {n:"코코넛버터새우", p:1890, img:"sushi-73", unit:"접시"},
+    {n:"버팔로윙", p:1890, img:"sushi-74", unit:"접시"},
+    {n:"멘보샤", p:1890, img:"sushi-75", unit:"접시"},
+    {n:"타코야끼", p:1890, img:"sushi-76", unit:"접시"},
+    {sec:"디저트"},
+    {n:"초코케이크", p:1890, img:"sushi-77", unit:"접시"},
+    {n:"마카롱", p:1890, img:"sushi-78", unit:"접시"},
+    {n:"파인애플", p:1890, img:"sushi-79", unit:"접시"},
+    {n:"수제 크림치즈", p:1890, img:"sushi-80", unit:"접시"},
+    {n:"뉴슈크림볼", p:1890, img:"sushi-81", unit:"접시"},
+    {sec:"사이드"},
+    {n:"우동", p:3900},
+    {n:"냉모밀 (여름한정)", p:4900}]},
 ];
 const DRINKS = [
   {n:"소주", d:"360ml 한 병", p:5000, img:"soju", opt:["처음처럼","참이슬","진로"]},
@@ -421,7 +533,7 @@ const DRINKS = [
   {n:"사이다", d:"355ml", p:2000, img:"cider"},
 ];
 const SIDES = ["국물떡볶이","계란찜","주먹밥","묵사발"];
-PLACES.forEach(pl => pl.menu.forEach((m,i) => { m.id = pl.id + "-" + i; }));
+PLACES.forEach(pl => { pl.menu.forEach((m,i) => { m.id = pl.id + "-" + i; }); (pl.drinks||[]).forEach((m,i) => { m.id = pl.id + "-d" + i; m.drink = 1; }); });
 DRINKS.forEach((m,i) => { m.id = "drink-" + i; m.drink = 1; });
 
 let place = null, tab = "food", cart = [], sel = null, selOpt = null, selPicks = [], selQty = 1, orderNo = 1;
@@ -501,11 +613,14 @@ $("randomPick").onclick = () => {
 function renderTabs(){ $("mTabs").querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.t === tab)); }
 $("mTabs").addEventListener("click", e => { const t = e.target.closest(".tab"); if(!t) return; beep(660); tab = t.dataset.t; renderTabs(); renderMenu(); });
 function renderMenu(){
-  const list = tab === "food" ? place.menu : DRINKS;
+  const list = tab === "food" ? place.menu : DRINKS.concat(place.drinks || []);
+  const tiles = tab === "food" && place.tiles;
+  $("mList").classList.toggle("tiles", !!tiles);
   const note = tab === "food" && place.note ? `<div class="notice">${place.note}</div>` : "";
   $("mList").innerHTML = note + list.map(m => {
     if (m.sec) return `<div class="sec">${m.sec}</div>`;
     const n = cart.filter(l => l.item.id === m.id).reduce((a,l) => a + l.qty, 0);
+    if (tiles && m.img) return `<button class="row tile" data-id="${m.id}"><div class="ph">${im(m.img)}</div><b>${m.n}</b><em class="won">${won(m.p)}</em>${n ? `<span class="cnt">${n}</span>` : ""}</button>`;
     const cnt = n ? `<span class="cnt${m.img ? "" : " solo"}">${n}</span>` : "";
     return `<button class="row" data-id="${m.id}">
       <div class="tx">${m.best ? '<span class="chip">대표</span>' : ""}<span class="nm">${m.n}</span>${m.d ? `<span class="ds">${m.d}</span>` : ""}<span class="pr won">${won(m.p)}${m.unit ? " / 1" + m.unit : ""}</span></div>
@@ -515,7 +630,7 @@ function renderMenu(){
 }
 $("mList").addEventListener("click", e => {
   const b = e.target.closest(".row"); if(!b) return;
-  const all = [...place.menu, ...DRINKS]; beep(); openSheet(all.find(m => m.id === b.dataset.id));
+  const all = [...place.menu, ...DRINKS, ...(place.drinks || [])]; beep(); openSheet(all.find(m => m.id === b.dataset.id));
 });
 
 /* 옵션 시트 */
