@@ -1,0 +1,669 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}</style>
+<title>회식장소 픽</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#0F3D2E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* 회식 테이블: 소주병 초록 바탕 + 맥주 호박색 포인트. 장소 카드 그리드 → 배달앱식 메뉴 리스트 → 하단 고정 주문바 */
+:root{
+  --bottle:#0F3D2E; --bottle2:#185440; --amber:#F2B33D; --paper:#F7F5EF; --card:#FFFFFF;
+  --ink:#1B1F1D; --line:#E4E1D7; --muted:#6F756F; --price:#C8322B; --ok:#1E7F4F;
+  --display:"Do Hyeon","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:light;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;text-align:inherit}
+button:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.screen{position:absolute;inset:0;left:0;right:0;margin:0 auto;max-width:1000px;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--paper)}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.won{font-variant-numeric:tabular-nums}
+img{display:block}
+
+/* 시작 */
+#start{background:var(--bottle);color:var(--paper);justify-content:center;align-items:center;text-align:center;gap:26px;overflow:hidden}
+#start .bubbles{position:absolute;inset:0;pointer-events:none;opacity:.35}
+#start .sign{font-family:var(--display);font-size:clamp(56px,17vw,96px);line-height:1;color:var(--amber);position:relative}
+#start .sign small{display:block;font-size:.26em;color:var(--paper);letter-spacing:.35em;margin-bottom:14px}
+#start .sub{font-size:15px;opacity:.8;position:relative}
+#start .tap{position:relative;background:var(--amber);color:var(--bottle);font-family:var(--display);font-size:26px;padding:18px 44px;border-radius:999px;box-shadow:0 8px 0 #B9821C}
+#start .tap:active{transform:translateY(4px);box-shadow:0 4px 0 #B9821C}
+
+/* 헤더 */
+header.top{background:var(--bottle);color:var(--paper);display:flex;align-items:center;gap:10px;padding-block:12px;min-height:56px}
+header.top h1{font-family:var(--display);font-weight:400;font-size:24px;margin:0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header.top .hbtn{font-size:14px;opacity:.85;padding:6px 2px;white-space:nowrap}
+
+/* 장소 선택 */
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.intro{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:16px 4px}
+.intro p{margin:0;color:var(--muted);font-size:14px}
+.pickbtn{background:var(--amber);color:var(--bottle);font-weight:700;padding:10px 16px;border-radius:999px;font-size:15px;white-space:nowrap;flex:none}
+.places{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-block:12px 40px}
+@media (min-width:640px){.places{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.place{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .12s}
+.place:active{transform:scale(.97)}
+.place .ph{aspect-ratio:4/3;max-width:100%;background:var(--line);position:relative}
+.place .ph img{width:100%;height:100%;object-fit:cover}
+.place .cat{position:absolute;left:8px;top:8px;background:rgba(15,61,46,.88);color:var(--amber);font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px}
+.place .tx{padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px}
+.place .tx b{font-family:var(--display);font-weight:400;font-size:21px;line-height:1.15}
+.place .tx span{font-size:12px;color:var(--muted)}
+.place .tx em{font-style:normal;font-weight:700;color:var(--price);font-size:14px}
+.place.hl{outline:4px solid var(--amber);outline-offset:-2px;transform:scale(1.03)}
+
+/* 메뉴 */
+.hero{position:relative;height:150px;flex:none;overflow:hidden;background:var(--bottle)}
+.hero img{width:100%;height:100%;object-fit:cover;opacity:.75}
+.hero .cap{position:absolute;left:0;right:0;bottom:0;padding-block:28px 12px;background:linear-gradient(transparent,rgba(10,30,22,.85));color:#fff}
+.hero .cap b{font-family:var(--display);font-weight:400;font-size:28px;display:block;line-height:1.1}
+.hero .cap span{font-size:13px;opacity:.85}
+.tabs{display:flex;gap:6px;background:var(--card);border-bottom:1px solid var(--line);padding-block:10px;flex:none}
+.tab{padding:8px 16px;border-radius:999px;font-weight:700;font-size:15px;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--bottle);color:var(--amber)}
+.list{background:var(--card);padding-bottom:130px}
+.row{display:flex;gap:14px;align-items:center;width:100%;padding:16px 0;border-bottom:1px solid var(--line)}
+.row:active{background:#FBFAF6}
+.row .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.row .chip{align-self:flex-start;border:1px solid var(--line);color:var(--muted);font-size:11px;padding:1px 7px;border-radius:999px}
+.row .nm{font-weight:700;font-size:16px;line-height:1.35}
+.row .ds{font-size:13px;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.row .pr{font-weight:700;font-size:15px}
+.row .th{width:92px;height:92px;border-radius:12px;overflow:hidden;flex:none;position:relative;background:var(--line)}
+.row .th img{width:100%;height:100%;object-fit:cover}
+.row .cnt{position:absolute;right:4px;top:4px;background:var(--bottle);color:var(--amber);min-width:24px;height:24px;border-radius:12px;display:grid;place-items:center;font-size:12px;font-weight:700}
+.row .cnt.solo{position:static}
+.sec{font-family:var(--display);font-size:18px;color:var(--bottle);padding-top:18px}
+.notice{font-size:12px;color:var(--muted);background:#FFF6DF;border-radius:10px;padding:10px 12px;margin-top:12px;line-height:1.5}
+
+/* 하단 바 */
+.cartbar{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:1000px;background:var(--bottle);color:var(--paper);display:flex;align-items:center;gap:12px;padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:5}
+.cartbar .sum{flex:1;min-width:0}
+.cartbar .sum b{display:block;color:var(--amber);font-size:20px}
+.cartbar .sum span{font-size:13px;opacity:.8}
+.btn{background:var(--amber);color:var(--bottle);font-family:var(--display);font-size:20px;padding:13px 22px;border-radius:12px;text-align:center}
+.btn[disabled]{opacity:.35}
+.btn.ghost{background:transparent;border:2px solid var(--line);color:var(--ink);font-family:var(--body);font-weight:700;font-size:15px}
+.cartbar .btn.ghost{color:var(--paper);border-color:rgba(255,255,255,.3)}
+
+/* 시트 */
+.dim{position:fixed;inset:0;background:rgba(10,25,18,.55);z-index:10;display:flex;align-items:flex-end}
+.sheet{background:var(--paper);width:100%;max-width:560px;margin:0 auto;border-radius:20px 20px 0 0;padding-block:20px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px;animation:up .22s ease-out;max-height:88%;overflow-y:auto}
+@keyframes up{from{transform:translateY(40%);opacity:0}}
+.sheet .hd{display:flex;gap:14px;align-items:center}
+.sheet .hd .pic{width:76px;height:76px;border-radius:14px;overflow:hidden;flex:none;background:var(--line);display:grid;place-items:center;font-size:36px}
+.sheet .hd .pic img{width:100%;height:100%;object-fit:cover}
+.sheet h2{font-family:var(--display);font-weight:400;font-size:24px;margin:0;line-height:1.15}
+.sheet .desc{color:var(--muted);font-size:13px;margin:4px 0 0;line-height:1.45}
+.lbl{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.04em}
+.opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.opt{padding:10px 14px;border-radius:10px;border:2px solid var(--line);font-weight:700;font-size:15px;background:var(--card)}
+.opt[aria-pressed="true"]{border-color:var(--bottle);background:var(--bottle);color:var(--amber)}
+.qty{display:flex;align-items:center;gap:16px}
+.qty button{width:44px;height:44px;border-radius:12px;border:2px solid var(--line);font-size:22px;font-weight:700;text-align:center;background:var(--card)}
+.qty output{font-size:22px;font-weight:700;min-width:28px;text-align:center}
+.rowbtns{display:flex;gap:10px}
+.rowbtns .btn{flex:1}
+
+/* 장바구니/결제 */
+.panel{flex:1;overflow-y:auto;padding-block:16px 150px;display:flex;flex-direction:column;gap:14px}
+.lines{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.line{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line)}
+.line:first-child{border-top:0}
+.line .ic{width:44px;height:44px;border-radius:10px;overflow:hidden;flex:none;background:var(--line)}
+.line .ic img{width:100%;height:100%;object-fit:cover}
+.line .tx{flex:1;min-width:0}
+.line .tx b{display:block;font-size:15px}
+.line .tx span{font-size:12px;color:var(--muted)}
+.line .q{display:flex;align-items:center;gap:8px}
+.line .q button{width:32px;height:32px;border-radius:9px;border:1.5px solid var(--line);font-weight:700;text-align:center}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-size:17px;padding:4px 2px}
+.total b{font-family:var(--display);font-weight:400;font-size:32px;color:var(--price)}
+.place-line{font-size:14px;color:var(--muted)}
+.place-line b{color:var(--bottle)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg button{padding:14px 10px;border-radius:12px;border:2px solid var(--line);background:var(--card);font-weight:700;font-size:16px;display:flex;flex-direction:column;gap:2px;align-items:center;text-align:center}
+.seg button span{font-size:12px;font-weight:400;color:var(--muted)}
+.seg button[aria-pressed="true"]{border-color:var(--bottle);background:var(--bottle);color:var(--amber)}
+.seg button[aria-pressed="true"] span{color:var(--paper)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.split{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.split div{display:flex;justify-content:space-between}
+.note{font-size:12px;color:var(--muted);margin:0}
+
+/* 결제중 */
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px;overflow-y:auto;padding-block:20px}
+.stage{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.who{background:var(--bottle);color:var(--amber);padding:6px 14px;border-radius:999px;font-weight:700;font-size:14px}
+.big{font-family:var(--display);font-size:30px}
+.card-anim{width:120px;height:78px;border-radius:12px;background:var(--bottle);position:relative;animation:swipe 1.1s ease-in-out infinite}
+.card-anim::after{content:"";position:absolute;left:0;right:0;top:16px;height:12px;background:var(--amber)}
+.cash-anim{width:130px;height:66px;border-radius:6px;background:#8BB98F;border:3px solid #5E8F63;animation:swipe 1.1s ease-in-out infinite}
+@keyframes swipe{50%{transform:translateY(18px)}}
+.bar{width:220px;max-width:70%;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width 2.2s linear}
+.bills{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
+.bill{background:var(--card);border:2px solid var(--line);border-radius:10px;padding:14px 8px;font-weight:700;font-size:16px;text-align:center}
+.bill.b1k{border-color:#8BB98F}.bill.b5k{border-color:#E59A6B}.bill.b1{border-color:#7FB2D8}.bill.b5{border-color:#E0B64F}
+.cashinfo{width:100%;display:flex;flex-direction:column;gap:4px;font-size:16px}
+.cashinfo div{display:flex;justify-content:space-between}
+.cashinfo .chg b{color:var(--ok);font-size:20px}
+#done{background:var(--bottle)}
+#done .big{color:var(--amber)}
+.receipt{background:#fff;width:min(340px,100%);border-radius:6px;padding:20px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14px;text-align:left;display:flex;flex-direction:column;gap:6px;color:var(--ink)}
+.receipt .no{font-family:var(--display);font-size:56px;text-align:center;line-height:1;margin:4px 0 8px}
+.receipt .rl{display:flex;justify-content:space-between;gap:8px}
+.receipt hr{border:0;border-top:1.5px dashed var(--line);margin:8px 0;width:100%}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head><body>
+
+<!-- 1. 시작 -->
+<section class="screen" id="start">
+  <canvas class="bubbles" id="bubbles" aria-hidden="true"></canvas>
+  <div class="sign"><small>오늘 회식은 어디로?</small>회식장소<br>픽!</div>
+  <div class="sub">9곳 중에 골라서 메뉴 주문까지 한 번에</div>
+  <button class="tap" id="go">장소 고르러 가기</button>
+</section>
+
+<!-- 2. 장소 선택 -->
+<section class="screen" id="places" hidden>
+  <header class="top gut"><h1>회식장소 픽</h1><button class="hbtn" id="toStart">처음으로</button></header>
+  <div class="scroll">
+    <div class="intro gut"><p>오늘 갈 곳을 눌러주세요</p><button class="pickbtn" id="randomPick">🎲 랜덤 픽</button></div>
+    <div class="places gut" id="placeGrid"></div>
+  </div>
+</section>
+
+<!-- 3. 메뉴 -->
+<section class="screen" id="menu" hidden>
+  <header class="top gut"><button class="hbtn" id="backPlaces">‹ 장소</button><h1 id="mTitle"></h1></header>
+  <div class="scroll" id="menuScroll">
+    <div class="hero"><img id="mHero" alt=""><div class="cap gut"><b id="mName"></b><span id="mSub"></span></div></div>
+    <nav class="tabs gut" role="tablist" id="mTabs">
+      <button class="tab" role="tab" data-t="food" aria-selected="true">식사메뉴</button>
+      <button class="tab" role="tab" data-t="drink" aria-selected="false">주류·음료</button>
+    </nav>
+    <div class="list gut" id="mList"></div>
+  </div>
+  <div class="cartbar gut">
+    <div class="sum"><b class="won" id="sumPrice">0원</b><span id="sumCnt">메뉴를 골라주세요</span></div>
+    <button class="btn" id="toCart" disabled>주문하기</button>
+  </div>
+</section>
+
+<!-- 4. 장바구니 -->
+<section class="screen" id="cart" hidden>
+  <header class="top gut"><button class="hbtn" id="backMenu">‹ 메뉴</button><h1>주문 확인</h1></header>
+  <div class="panel gut">
+    <div class="place-line">회식 장소 <b id="cPlace"></b></div>
+    <div class="lines" id="lines"></div>
+    <div class="total"><span>총 결제금액</span><b class="won" id="cartTotal">0원</b></div>
+  </div>
+  <div class="cartbar gut">
+    <button class="btn ghost" id="backMenu2">추가 주문</button>
+    <button class="btn" id="toPay" style="flex:1">결제하기</button>
+  </div>
+</section>
+
+<!-- 5. 결제 선택 -->
+<section class="screen" id="pay" hidden>
+  <header class="top gut"><button class="hbtn" id="backCart">‹ 이전</button><h1>결제</h1></header>
+  <div class="panel gut">
+    <div class="total"><span>결제할 금액</span><b class="won" id="payTotal">0원</b></div>
+    <div class="lbl">결제 방식</div>
+    <div class="seg" id="segSplit">
+      <button data-v="all" aria-pressed="true">일괄결제<span>한 사람이 한 번에 계산</span></button>
+      <button data-v="dutch" aria-pressed="false">더치페이<span>인원수대로 나눠 계산</span></button>
+    </div>
+    <div class="box" id="dutchBox" hidden>
+      <div class="qty"><span class="lbl">인원</span><button id="pMinus" aria-label="인원 빼기">−</button><output id="pVal" class="won">2</output><button id="pPlus" aria-label="인원 더하기">+</button><span class="lbl">명</span></div>
+      <div class="split won" id="splitList"></div>
+      <p class="note">결제수단은 사람마다 차례로 고릅니다.</p>
+    </div>
+    <div id="methodWrap">
+      <div class="lbl" style="margin-bottom:8px">결제 수단</div>
+      <div class="seg" id="segMethod">
+        <button data-v="card" aria-pressed="false">💳 신용카드<span>IC카드 투입</span></button>
+        <button data-v="cash" aria-pressed="false">💵 현금<span>지폐 투입, 거스름돈 계산</span></button>
+      </div>
+    </div>
+    <p class="note">실제 결제는 되지 않는 놀이용 화면입니다.</p>
+  </div>
+  <div class="cartbar gut">
+    <div class="sum"><span id="payPick">결제 수단을 골라주세요</span></div>
+    <button class="btn" id="doPay" disabled>결제 진행</button>
+  </div>
+</section>
+
+<!-- 6. 결제중 -->
+<section class="screen" id="paying" hidden>
+  <div class="center gut">
+    <div class="stage">
+      <div class="who" id="pWho">일괄결제</div>
+      <div class="big won" id="pAmt">0원</div>
+      <div class="seg" id="pChoose" style="width:100%" hidden>
+        <button data-v="card" aria-pressed="false">💳 신용카드<span>IC카드 투입</span></button>
+        <button data-v="cash" aria-pressed="false">💵 현금<span>지폐 투입</span></button>
+      </div>
+      <div class="stage" id="pCard" hidden>
+        <div class="card-anim" aria-hidden="true"></div>
+        <div id="payingMsg" style="font-size:18px;font-weight:700">카드를 꽂아주세요</div>
+        <div class="bar"><i id="payBar"></i></div>
+      </div>
+      <div class="stage" id="pCash" hidden>
+        <div class="cash-anim" aria-hidden="true"></div>
+        <div style="font-size:18px;font-weight:700">지폐를 넣어주세요</div>
+        <div class="bills" id="bills">
+          <button class="bill b1k" data-b="1000">천원</button><button class="bill b5k" data-b="5000">오천원</button>
+          <button class="bill b1" data-b="10000">만원</button><button class="bill b5" data-b="50000">오만원</button>
+        </div>
+        <div class="cashinfo won">
+          <div><span>넣은 금액</span><b id="cIn">0원</b></div>
+          <div><span>남은 금액</span><b id="cLeft">0원</b></div>
+          <div class="chg" id="cChgRow" hidden><span>거스름돈</span><b id="cChg">0원</b></div>
+        </div>
+        <button class="btn" id="cDone" style="width:100%" disabled>현금 결제 완료</button>
+      </div>
+      <div class="stage" id="pNext" hidden>
+        <div style="font-size:18px;font-weight:700" id="pNextMsg"></div>
+        <button class="btn" id="nextBtn" style="width:100%">다음 사람 결제하기</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. 완료 -->
+<section class="screen" id="done" hidden>
+  <div class="center gut">
+    <div class="big">주문 완료! 건배~ 🍻</div>
+    <div class="receipt" id="receipt"></div>
+    <button class="btn" id="again">처음으로</button>
+  </div>
+</section>
+
+<!-- 옵션 시트 -->
+<div class="dim" id="dim" hidden>
+  <div class="sheet gut" role="dialog" aria-modal="true" aria-labelledby="shName">
+    <div class="hd"><div class="pic" id="shPic"></div><div style="min-width:0"><h2 id="shName"></h2><p class="desc" id="shDesc"></p></div></div>
+    <div id="shOptWrap"><div class="lbl" id="shOptLbl">옵션 선택</div><div class="opts" id="shOpts"></div></div>
+    <div id="shPickWrap"><div class="lbl" id="shPickLbl"></div><div class="opts" id="shPicks"></div></div>
+    <div class="qty"><span class="lbl">수량</span><button id="qMinus" aria-label="수량 빼기">−</button><output id="qVal">1</output><button id="qPlus" aria-label="수량 더하기">+</button></div>
+    <div class="rowbtns"><button class="btn ghost" id="shCancel">닫기</button><button class="btn" id="shAdd">담기</button></div>
+  </div>
+</div>
+
+<!-- 장소 변경 확인 -->
+<div class="dim" id="confirmDim" hidden>
+  <div class="sheet gut" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+    <h2 id="cfTitle">다른 장소로 갈까요?</h2>
+    <p class="desc" style="font-size:15px">지금 담은 메뉴는 비워집니다.</p>
+    <div class="rowbtns"><button class="btn ghost" id="cfNo">계속 주문</button><button class="btn" id="cfYes">비우고 이동</button></div>
+  </div>
+</div>
+
+<script>
+const IMG = {"beer": "img/beer.jpg", "bulnori-0": "img/bulnori-0.jpg", "bulnori-1": "img/bulnori-1.jpg", "bulnori-2": "img/bulnori-2.jpg", "cider": "img/cider.jpg", "cola": "img/cola.jpg", "deunggalbi-0": "img/deunggalbi-0.jpg", "deunggalbi-1": "img/deunggalbi-1.jpg", "deunggalbi-2": "img/deunggalbi-2.jpg", "dolgopchang1-0": "img/dolgopchang1-0.jpg", "dolgopchang2-0": "img/dolgopchang2-0.jpg", "jangdaebak-0": "img/jangdaebak-0.jpg", "jangdaebak-1": "img/jangdaebak-1.jpg", "jangdaebak-2": "img/jangdaebak-2.jpg", "jangdaebak-3": "img/jangdaebak-3.jpg", "jangdaebak-4": "img/jangdaebak-4.jpg", "jokbal-0": "img/jokbal-0.jpg", "jokbal-1": "img/jokbal-1.jpg", "jokbal-2": "img/jokbal-2.jpg", "jokbal-3": "img/jokbal-3.jpg", "jokbal-4": "img/jokbal-4.jpg", "kkakdugi-0": "img/kkakdugi-0.jpg", "kkakdugi-1": "img/kkakdugi-1.jpg", "kkakdugi-2": "img/kkakdugi-2.jpg", "kkakdugi-3": "img/kkakdugi-3.jpg", "rep-bulnori": "img/rep-bulnori.jpg", "rep-deunggalbi": "img/rep-deunggalbi.jpg", "rep-dolgopchang": "img/rep-dolgopchang.jpg", "rep-jangdaebak": "img/rep-jangdaebak.jpg", "rep-jokbal": "img/rep-jokbal.jpg", "rep-kkakdugi": "img/rep-kkakdugi.jpg", "rep-saebyeok": "img/rep-saebyeok.jpg", "rep-shabu": "img/rep-shabu.jpg", "rep-yukogam": "img/rep-yukogam.jpg", "rep-yukogam2": "img/rep-yukogam2.jpg", "shabu-0": "img/shabu-0.jpg", "shabu-1": "img/shabu-1.jpg", "shabu-2": "img/shabu-2.jpg", "soju": "img/soju.jpg", "yukogam-0": "img/yukogam-0.jpg", "yukogam-1": "img/yukogam-1.jpg", "yukogam-2": "img/yukogam-2.jpg", "yukogam-3": "img/yukogam-3.jpg", "yukogam-4": "img/yukogam-4.jpg", "yukogam-5": "img/yukogam-5.jpg", "yukogam-6": "img/yukogam-6.jpg"};
+const im = k => IMG[k] ? `<img src="${IMG[k]}" alt="">` : "";
+
+const PLACES = [
+  {id:"dolgopchang", n:"안성돌곱창", cat:"곱창", rep:"rep-dolgopchang", sub:"곱창·대창·막창, 곱창전골", menu:[
+    {n:"모듬한판(600g)", d:"곱창+대창+막창 각 200g", p:60000, img:"dolgopchang1-0", best:1},
+    {sec:"곱창전골 (반조리 · 우동사리 따로 포장)"},
+    {n:"소곱창전골(중)", d:"얼큰한 소곱창 전골", p:40000, img:"dolgopchang2-0", best:1},
+    {n:"소곱창전골(대)", d:"얼큰한 소곱창 전골", p:45000, img:"dolgopchang2-0"}]},
+  {id:"deunggalbi", n:"등갈비", cat:"등갈비·쪽갈비", rep:"rep-deunggalbi", sub:"2인 세트, 사이드 2가지 선택", menu:[
+    {n:"등갈비소금구이 (2인)", d:"등갈비 900g + 사이드 2가지 선택 + 쌈무·옥수수", p:34000, img:"deunggalbi-0", best:1, side:1},
+    {n:"등갈비양념구이 (2인)", d:"등갈비 900g + 사이드 2가지 선택 + 쌈무·옥수수", p:35000, img:"deunggalbi-1", best:1, side:1},
+    {n:"치즈등갈비 (2인)", d:"등갈비 900g + 서울우유치즈 + 사이드 2가지 선택", p:39000, img:"deunggalbi-2", best:1, side:1}]},
+  {id:"bulnori", n:"불노리막창", cat:"막창", rep:"rep-bulnori", sub:"초벌 막창 전문", menu:[
+    {n:"불노리돼지막창 200g", d:"초벌돼지막창", p:15000, img:"bulnori-0", best:1},
+    {n:"불노리소막창 200g", d:"초벌소막창", p:19000, img:"bulnori-1"},
+    {n:"양념쫀득살 170g", d:"매콤달콤 양념 쫀득살", p:16000, img:"bulnori-2"}]},
+  {id:"saebyeok", n:"새벽시장", cat:"횟집", rep:"rep-saebyeok", sub:"싱싱한 회와 매운탕", note:"회는 시가라 메뉴판에 가격이 없어요. 상차림비는 회 주문 시 붙습니다.", menu:[
+    {sec:"식사·요리"},
+    {n:"물회", p:15000},
+    {n:"회덮밥", p:7000},
+    {n:"알밥", p:6000},
+    {n:"해물라면", p:7000},
+    {n:"고등어구이", p:8000},
+    {n:"전복버터구이", p:20000},
+    {n:"계란말이·찜", p:3000},
+    {n:"치즈돈가스", p:6000},
+    {sec:"탕"},
+    {n:"꽃게탕", p:30000, opt:["中","大 +15000"], best:1},
+    {n:"우럭통매운탕", p:25000, opt:["中","大 +15000"]},
+    {n:"삼식이매운탕", p:30000},
+    {n:"매운탕", d:"회 드신 후 서더리 매운탕", p:5000},
+    {sec:"튀김"},
+    {n:"왕새우튀김", p:10000, opt:["7마리","15마리 +10000"]},
+    {n:"오징어튀김", p:10000},
+    {sec:"기타"},
+    {n:"상차림", d:"회 주문 시 상차림 비용", p:3000}]},
+  {id:"shabu", n:"샤브샤브", cat:"샤브샤브", rep:"rep-shabu", sub:"고기&샐러드바 무제한 · 1인 가격", menu:[
+    {n:"평일점심 (고기무제한)", d:"고기&샐러드바 무제한 · 11:00~16:29 주문", p:24900, img:"shabu-0", unit:"명"},
+    {n:"평일저녁 (고기무제한)", d:"고기&샐러드바 무제한 · 16:30 이후 주문", p:29900, img:"shabu-1", best:1, unit:"명"},
+    {n:"주말 및 공휴일 (고기무제한)", d:"고기&샐러드바 무제한", p:29900, img:"shabu-2", unit:"명"}]},
+  {id:"kkakdugi", n:"안성깍두기", cat:"쭈꾸미", rep:"rep-kkakdugi", sub:"쭈꾸미철판 전문", menu:[
+    {n:"쭈꾸미철판(300g)", d:"안성깍뚜기 대표 메뉴", p:16000, img:"kkakdugi-0", best:1},
+    {n:"쭈꾸미 방문포장(300g)", d:"밑반찬 없이 비조리 쭈꾸미만 드립니다", p:9000, img:"kkakdugi-1"},
+    {n:"쭈꾸미정식(200g)", d:"+공깃밥 (점심 특선 메뉴)", p:12000, img:"kkakdugi-2"},
+    {n:"삼겹살", d:"쭈꾸미철판에 추가", p:9000, img:"kkakdugi-3"}]},
+  {id:"yukogam", n:"육오감", cat:"고깃집", rep:"rep-yukogam", sub:"제주 한돈·스페셜 소", menu:[
+    {n:"숯불 양념 돼지갈비 한마리(1kg)", d:"72시간 숙성, 매장에서 직접 만든 수제 돼지갈비", p:67000, img:"yukogam-0", best:1},
+    {n:"제주도 한돈 모듬 한마리(1kg)", d:"제주 삼겹살+목살+가브리살+항정살+갈매기살 (5가지 부위)", p:79000, img:"yukogam-1", best:1},
+    {n:"제주도 삼겹살(1kg)", d:"청정 지역 제주도 명품 삼겹살", p:79000, img:"yukogam-2"},
+    {n:"스페셜 소 한마리(1kg)", d:"LA꽃갈비살+살치살+갈비살(늑간살)+차돌박이 (4가지 부위)", p:99000, img:"yukogam-3", best:1},
+    {n:"제주도 삼겹살(500g)", d:"청정 지역 제주도 명품 삼겹살", p:45000, img:"yukogam-4"},
+    {n:"제주도 한돈 모듬 반마리(500g)", d:"제주 삼겹살+목살+가브리살+항정살+갈매기살 (5가지 부위)", p:45000, img:"yukogam-5"},
+    {n:"스페셜 소 반마리(500g)", d:"LA꽃갈비살+살치살+갈비살(늑간살)+차돌박이 (4가지 부위)", p:59000, img:"yukogam-6"}]},
+  {id:"jangdaebak", n:"장대박", cat:"모듬구이", rep:"rep-jangdaebak", sub:"장대박 모듬구이", menu:[
+    {n:"장대박모듬구이 1인분(200g)", d:"고기 200g + 특제소스·된장·파채·김치·양파절임·쌈무·고추", p:15000, img:"jangdaebak-0", best:1, unit:"인분"},
+    {n:"장대박모듬구이 고기만(대 800g)", d:"고기 + 파채·특제소스·된장 (반찬 제공 X)", p:50000, img:"jangdaebak-1"},
+    {n:"장대박모듬구이 고기만(중 600g)", d:"고기 + 파채·특제소스·된장 (반찬 제공 X)", p:40000, img:"jangdaebak-2"},
+    {n:"장대박모듬구이 고기만(소 400g)", d:"고기 + 파채·특제소스·된장 (반찬 제공 X)", p:27000, img:"jangdaebak-3"},
+    {n:"장대박모듬구이+된장밥(고기 200g)", d:"장대박모듬구이(200g) + 된장밥", p:20000, img:"jangdaebak-4"}]},
+  {id:"jokbal", n:"가장맛있는족발", cat:"족발", rep:"rep-jokbal", sub:"아양점 · 3대째 내려오는 맛", menu:[
+    {n:"뒷발 족발 (소)", d:"'소중' 하지만 결코 작지 않은 뒷발. 부드럽고 쫀득한 가족 대표메뉴", p:37000, img:"jokbal-0", best:1},
+    {n:"뒷발 족발 (중)", d:"'소중' 하지만 결코 작지 않은 뒷발. 부드럽고 쫀득한 가족 대표메뉴", p:43000, img:"jokbal-1"},
+    {n:"앞발 족발 (대)", d:"먹으면 배불러서 '대'자로 뻗게 되는 앞발", p:49000, img:"jokbal-2"},
+    {n:"반반족발 (중)", d:"족발+불족, 2~3인이 부담없이 즐길 수 있는 이중매력", p:48000, img:"jokbal-3", best:1},
+    {n:"반반족발 (대)", d:"족발+불족 두 가지 맛을 한번에", p:60000, img:"jokbal-4"}]},
+];
+const DRINKS = [
+  {n:"소주", d:"360ml 한 병", p:5000, img:"soju", opt:["처음처럼","참이슬","진로"]},
+  {n:"맥주", d:"500ml 한 병", p:5000, img:"beer", opt:["카스","테라","켈리"]},
+  {n:"콜라", d:"355ml", p:2000, img:"cola"},
+  {n:"사이다", d:"355ml", p:2000, img:"cider"},
+];
+const SIDES = ["국물떡볶이","계란찜","주먹밥","묵사발"];
+PLACES.forEach(pl => pl.menu.forEach((m,i) => { m.id = pl.id + "-" + i; }));
+DRINKS.forEach((m,i) => { m.id = "drink-" + i; m.drink = 1; });
+
+let place = null, tab = "food", cart = [], sel = null, selOpt = null, selPicks = [], selQty = 1, orderNo = 1;
+let splitMode = "all", people = 4, method = null, shares = [], payIdx = 0, payments = [], cashIn = 0;
+try{ orderNo = +(localStorage.getItem("hoesikNo") || 1); }catch(e){}
+
+const $ = id => document.getElementById(id);
+const won = n => n.toLocaleString("ko-KR") + "원";
+const extra = o => { const m = o && o.match(/\+(\d+)/); return m ? +m[1] : 0; };
+const optName = o => o ? o.replace(/ \+\d+/, "") : "";
+const lineSum = l => (l.item.p + extra(l.opt)) * l.qty;
+const total = () => cart.reduce((a,l) => a + lineSum(l), 0);
+const count = () => cart.reduce((a,l) => a + l.qty, 0);
+const lineDesc = l => [optName(l.opt), l.picks.length ? l.picks.join("·") : ""].filter(Boolean).join(" / ");
+const minPrice = pl => Math.min(...pl.menu.filter(m => m.p).map(m => m.p));
+
+function show(id){ document.querySelectorAll(".screen").forEach(s => s.hidden = s.id !== id); }
+function beep(f=880, t=.07){
+  try{
+    const ac = beep.ac || (beep.ac = new (window.AudioContext || window.webkitAudioContext)());
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.frequency.value = f; g.gain.value = .07; o.connect(g); g.connect(ac.destination);
+    o.start(); o.stop(ac.currentTime + t);
+  }catch(e){}
+  if (navigator.vibrate) try{ navigator.vibrate(12); }catch(e){}
+}
+
+/* 시작 화면 거품 */
+(function bubbles(){
+  const c = $("bubbles"), x = c.getContext("2d"); let W, H, B = [];
+  const fit = () => { W = c.width = c.offsetWidth; H = c.height = c.offsetHeight; };
+  fit(); addEventListener("resize", fit);
+  for (let i = 0; i < 40; i++) B.push({x:Math.random(), y:Math.random(), r:2 + Math.random()*6, v:.0006 + Math.random()*.0016});
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  (function loop(){
+    if (!$("start").hidden){
+      x.clearRect(0,0,W,H); x.strokeStyle = "#F2B33D"; x.lineWidth = 1.5;
+      B.forEach(b => { if(!reduce){ b.y -= b.v; if (b.y < -.05) { b.y = 1.05; b.x = Math.random(); } }
+        x.beginPath(); x.arc(b.x*W, b.y*H, b.r, 0, 7); x.stroke(); });
+    }
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* 장소 */
+function renderPlaces(){
+  $("placeGrid").innerHTML = PLACES.map(pl => `
+    <button class="place" data-id="${pl.id}">
+      <div class="ph">${im(pl.rep)}<span class="cat">${pl.cat}</span></div>
+      <div class="tx"><b>${pl.n}</b><span>${pl.sub}</span><em class="won">${won(minPrice(pl))}~</em></div>
+    </button>`).join("");
+}
+$("placeGrid").addEventListener("click", e => {
+  const b = e.target.closest(".place"); if(!b) return;
+  beep(); openPlace(b.dataset.id);
+});
+function openPlace(id){
+  place = PLACES.find(p => p.id === id); tab = "food";
+  $("mTitle").textContent = place.n; $("mName").textContent = place.n; $("mSub").textContent = place.cat + " · " + place.sub;
+  $("mHero").src = IMG[place.rep] || ""; renderTabs(); renderMenu(); updateBar(); show("menu"); $("menuScroll").scrollTop = 0;
+}
+$("randomPick").onclick = () => {
+  const cards = [...document.querySelectorAll(".place")]; let i = 0, spins = 18 + Math.floor(Math.random()*cards.length), cur = -1;
+  $("randomPick").disabled = true;
+  const tick = () => {
+    if (cur >= 0) cards[cur].classList.remove("hl");
+    cur = (cur + 1 + Math.floor(Math.random()*(cards.length-1))) % cards.length;
+    cards[cur].classList.add("hl"); cards[cur].scrollIntoView({block:"nearest", behavior:"smooth"});
+    beep(480 + i*25, .04);
+    if (++i < spins) setTimeout(tick, 55 + i*12);
+    else { beep(1300,.18); setTimeout(() => { cards[cur].classList.remove("hl"); $("randomPick").disabled = false; openPlace(cards[cur].dataset.id); }, 900); }
+  };
+  tick();
+};
+
+/* 메뉴 */
+function renderTabs(){ $("mTabs").querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.t === tab)); }
+$("mTabs").addEventListener("click", e => { const t = e.target.closest(".tab"); if(!t) return; beep(660); tab = t.dataset.t; renderTabs(); renderMenu(); });
+function renderMenu(){
+  const list = tab === "food" ? place.menu : DRINKS;
+  const note = tab === "food" && place.note ? `<div class="notice">${place.note}</div>` : "";
+  $("mList").innerHTML = note + list.map(m => {
+    if (m.sec) return `<div class="sec">${m.sec}</div>`;
+    const n = cart.filter(l => l.item.id === m.id).reduce((a,l) => a + l.qty, 0);
+    const cnt = n ? `<span class="cnt${m.img ? "" : " solo"}">${n}</span>` : "";
+    return `<button class="row" data-id="${m.id}">
+      <div class="tx">${m.best ? '<span class="chip">대표</span>' : ""}<span class="nm">${m.n}</span>${m.d ? `<span class="ds">${m.d}</span>` : ""}<span class="pr won">${won(m.p)}${m.unit ? " / 1" + m.unit : ""}</span></div>
+      ${m.img ? `<div class="th">${im(m.img)}${cnt}</div>` : cnt}
+    </button>`;
+  }).join("");
+}
+$("mList").addEventListener("click", e => {
+  const b = e.target.closest(".row"); if(!b) return;
+  const all = [...place.menu, ...DRINKS]; beep(); openSheet(all.find(m => m.id === b.dataset.id));
+});
+
+/* 옵션 시트 */
+function openSheet(m){
+  sel = m; selQty = 1; selOpt = m.opt ? m.opt[0] : null; selPicks = [];
+  $("shPic").innerHTML = m.img ? im(m.img) : "🍽️";
+  $("shName").textContent = m.n;
+  $("shDesc").textContent = [m.d, won(m.p) + (m.unit ? " / 1" + m.unit : "")].filter(Boolean).join(" · ");
+  $("shOptWrap").hidden = !m.opt;
+  if (m.opt){
+    $("shOptLbl").textContent = m.drink ? "브랜드 선택" : "옵션 선택";
+    $("shOpts").innerHTML = m.opt.map((o,i) => `<button class="opt" aria-pressed="${i===0}" data-o="${o}">${o.replace(/\+(\d+)/, (_,n) => "+" + (+n).toLocaleString("ko-KR") + "원")}</button>`).join("");
+  }
+  $("shPickWrap").hidden = !m.side;
+  if (m.side) renderPicks();
+  $("qVal").textContent = 1; updateAddBtn();
+  $("dim").hidden = false;
+}
+function renderPicks(){
+  $("shPickLbl").textContent = `사이드 선택 (${selPicks.length}/2)`;
+  $("shPicks").innerHTML = SIDES.map(s => `<button class="opt" aria-pressed="${selPicks.includes(s)}" data-s="${s}">${s}</button>`).join("");
+}
+function updateAddBtn(){
+  const need = sel.side && selPicks.length < 2;
+  $("shAdd").disabled = need;
+  $("shAdd").textContent = need ? "사이드 2개를 골라주세요" : won((sel.p + extra(selOpt)) * selQty) + " 담기";
+}
+$("shOpts").addEventListener("click", e => {
+  const b = e.target.closest(".opt"); if(!b) return;
+  beep(700); selOpt = b.dataset.o;
+  $("shOpts").querySelectorAll(".opt").forEach(x => x.setAttribute("aria-pressed", x === b));
+  updateAddBtn();
+});
+$("shPicks").addEventListener("click", e => {
+  const b = e.target.closest(".opt"); if(!b) return; const s = b.dataset.s;
+  if (selPicks.includes(s)) selPicks = selPicks.filter(x => x !== s);
+  else { if (selPicks.length >= 2) selPicks.shift(); selPicks.push(s); }
+  beep(700); renderPicks(); updateAddBtn();
+});
+$("qMinus").onclick = () => { if (selQty > 1){ selQty--; beep(600); } $("qVal").textContent = selQty; updateAddBtn(); };
+$("qPlus").onclick  = () => { if (selQty < 50){ selQty++; beep(900); } $("qVal").textContent = selQty; updateAddBtn(); };
+$("shCancel").onclick = () => $("dim").hidden = true;
+$("dim").addEventListener("click", e => { if (e.target.id === "dim") $("dim").hidden = true; });
+$("shAdd").onclick = () => {
+  const key = sel.id + "|" + selOpt + "|" + selPicks.slice().sort().join(",");
+  const ex = cart.find(l => l.key === key);
+  if (ex) ex.qty += selQty; else cart.push({key, item:sel, opt:selOpt, picks:selPicks.slice(), qty:selQty});
+  beep(1200,.1); $("dim").hidden = true; renderMenu(); updateBar();
+};
+function updateBar(){
+  $("sumPrice").textContent = won(total());
+  $("sumCnt").textContent = count() ? `${count()}개 담음` : "메뉴를 골라주세요";
+  $("toCart").disabled = !count();
+}
+
+/* 장소 바꾸기 */
+$("backPlaces").onclick = () => { if (cart.length) $("confirmDim").hidden = false; else { show("places"); } };
+$("cfNo").onclick = () => $("confirmDim").hidden = true;
+$("confirmDim").addEventListener("click", e => { if (e.target.id === "confirmDim") $("confirmDim").hidden = true; });
+$("cfYes").onclick = () => { cart = []; $("confirmDim").hidden = true; show("places"); };
+
+/* 장바구니 */
+function renderCart(){
+  if (!cart.length){ renderMenu(); updateBar(); show("menu"); return; }
+  $("cPlace").textContent = place.n;
+  $("lines").innerHTML = cart.map((l,i) => `
+    <div class="line">
+      <div class="ic">${l.item.img ? im(l.item.img) : ""}</div>
+      <div class="tx"><b>${l.item.n}</b><span>${lineDesc(l) ? lineDesc(l) + " · " : ""}<span class="won">${won(lineSum(l))}</span></span></div>
+      <div class="q"><button data-i="${i}" data-d="-1" aria-label="빼기">−</button><span class="won">${l.qty}</span><button data-i="${i}" data-d="1" aria-label="더하기">+</button></div>
+    </div>`).join("");
+  $("cartTotal").textContent = won(total());
+}
+$("lines").addEventListener("click", e => {
+  const b = e.target.closest("button[data-i]"); if(!b) return;
+  const l = cart[+b.dataset.i]; l.qty += +b.dataset.d; beep(b.dataset.d > 0 ? 900 : 600);
+  if (l.qty <= 0) cart.splice(+b.dataset.i, 1);
+  renderCart();
+});
+
+/* 결제 */
+const MNAME = {card:"신용카드", cash:"현금"};
+function makeShares(){
+  const t = total();
+  if (splitMode === "all") return [t];
+  const per = Math.floor(t / people / 100) * 100;
+  return Array.from({length:people}, (_,i) => i === 0 ? t - per*(people-1) : per);
+}
+function press(wrap, v){ $(wrap).querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v)); }
+function renderPays(){
+  $("payTotal").textContent = won(total());
+  press("segSplit", splitMode);
+  $("dutchBox").hidden = splitMode !== "dutch";
+  $("methodWrap").hidden = splitMode === "dutch";
+  press("segMethod", method);
+  $("pVal").textContent = people;
+  shares = makeShares();
+  if (splitMode === "dutch"){
+    const per = shares[1], first = shares[0];
+    $("splitList").innerHTML = `<div><span>1인당</span><b>${won(per)}</b></div>` +
+      (first !== per ? `<div style="color:var(--muted)"><span>1번 (나머지 포함)</span><span>${won(first)}</span></div>` : "");
+    $("payPick").textContent = `더치페이 ${people}명`;
+    $("doPay").disabled = false;
+  } else {
+    $("payPick").textContent = method ? `일괄결제 · ${MNAME[method]}` : "결제 수단을 골라주세요";
+    $("doPay").disabled = !method;
+  }
+}
+$("segSplit").addEventListener("click", e => { const b = e.target.closest("button"); if(!b) return; beep(800); splitMode = b.dataset.v; renderPays(); });
+$("segMethod").addEventListener("click", e => { const b = e.target.closest("button"); if(!b) return; beep(800); method = b.dataset.v; renderPays(); });
+$("pMinus").onclick = () => { if (people > 2){ people--; beep(600); } renderPays(); };
+$("pPlus").onclick  = () => { if (people < 30){ people++; beep(900); } renderPays(); };
+$("doPay").onclick = () => { beep(); shares = makeShares(); payIdx = 0; payments = []; show("paying"); startTurn(); };
+
+function startTurn(){
+  $("pWho").textContent = splitMode === "all" ? "일괄결제" : `더치페이 ${payIdx+1} / ${shares.length}번째`;
+  $("pAmt").textContent = won(shares[payIdx]);
+  ["pCard","pCash","pNext"].forEach(id => $(id).hidden = true);
+  if (splitMode === "dutch"){ $("pChoose").hidden = false; press("pChoose", null); }
+  else { $("pChoose").hidden = true; runMethod(method); }
+}
+$("pChoose").addEventListener("click", e => { const b = e.target.closest("button"); if(!b) return; beep(800); $("pChoose").hidden = true; runMethod(b.dataset.v); });
+function runMethod(m){
+  if (shares[payIdx] === 0) return paid({m, amt:0});
+  if (m === "card"){
+    $("pCard").hidden = false;
+    $("payBar").style.transition = "none"; $("payBar").style.width = "0";
+    $("payingMsg").textContent = "카드를 꽂아주세요";
+    requestAnimationFrame(() => requestAnimationFrame(() => { $("payBar").style.transition = ""; $("payBar").style.width = "100%"; }));
+    setTimeout(() => { $("payingMsg").textContent = "승인 요청 중…"; beep(700); }, 900);
+    setTimeout(() => { $("payingMsg").textContent = "승인 완료! 카드를 빼주세요"; beep(1300,.15); }, 2000);
+    setTimeout(() => paid({m:"card", amt:shares[payIdx]}), 2700);
+  } else { cashIn = 0; $("pCash").hidden = false; updateCash(); }
+}
+function updateCash(){
+  const amt = shares[payIdx], left = Math.max(0, amt - cashIn);
+  $("cIn").textContent = won(cashIn); $("cLeft").textContent = won(left);
+  $("cChgRow").hidden = cashIn < amt; $("cChg").textContent = won(cashIn - amt);
+  $("cDone").disabled = cashIn < amt;
+}
+$("bills").addEventListener("click", e => {
+  const b = e.target.closest(".bill"); if(!b || cashIn >= shares[payIdx]) return;
+  cashIn += +b.dataset.b; beep(1000,.05); updateCash();
+});
+$("cDone").onclick = () => { beep(1300,.15); paid({m:"cash", amt:shares[payIdx], got:cashIn, chg:cashIn - shares[payIdx]}); };
+function paid(rec){
+  payments.push(rec);
+  ["pCard","pCash"].forEach(id => $(id).hidden = true);
+  if (payIdx < shares.length - 1){
+    $("pNextMsg").textContent = `${payIdx+1}번 ${MNAME[rec.m]} 결제 완료` + (rec.chg ? ` · 거스름돈 ${won(rec.chg)}` : "");
+    $("pNext").hidden = false;
+  } else finish();
+}
+$("nextBtn").onclick = () => { beep(); payIdx++; startTurn(); };
+
+function finish(){
+  const t = new Date().toLocaleTimeString("ko-KR", {hour:"2-digit", minute:"2-digit"});
+  const payLines = payments.map((r,i) => `
+    <div class="rl"><span>${splitMode === "dutch" ? (i+1) + "번 " : ""}${MNAME[r.m]}</span><span class="won">${won(r.amt)}</span></div>
+    ${r.m === "cash" ? `<div class="rl" style="color:var(--muted);font-size:12px"><span>&nbsp;받은 금액 ${won(r.got)}</span><span>거스름돈 ${won(r.chg)}</span></div>` : ""}`).join("");
+  $("receipt").innerHTML = `
+    <div style="text-align:center;font-weight:700">${place.n}</div>
+    <div style="text-align:center;color:var(--muted)">주문번호</div>
+    <div class="no won">${String(orderNo).padStart(3,"0")}</div>
+    ${cart.map(l => `<div class="rl"><span>${l.item.n}${lineDesc(l) ? " (" + lineDesc(l) + ")" : ""} × ${l.qty}</span><span class="won">${won(lineSum(l))}</span></div>`).join("")}
+    <hr>
+    <div class="rl"><b>합계</b><b class="won">${won(total())}</b></div>
+    <div class="rl" style="color:var(--muted)"><span>${splitMode === "dutch" ? "더치페이 " + payments.length + "명" : "일괄결제"}</span><span>${t}</span></div>
+    ${payLines}
+    <hr>
+    <div style="text-align:center;color:var(--muted)">오늘도 수고하셨습니다!</div>`;
+  orderNo++; try{ localStorage.setItem("hoesikNo", orderNo); }catch(e){}
+  show("done");
+}
+
+function reset(){ cart = []; method = null; splitMode = "all"; people = 4; place = null; show("start"); }
+$("go").onclick = () => { beep(); show("places"); };
+$("toStart").onclick = reset;
+$("toCart").onclick = () => { beep(); renderCart(); show("cart"); };
+$("backMenu").onclick = $("backMenu2").onclick = () => { renderMenu(); updateBar(); show("menu"); };
+$("toPay").onclick = () => { beep(); renderPays(); show("pay"); };
+$("backCart").onclick = () => { renderCart(); show("cart"); };
+$("again").onclick = reset;
+
+renderPlaces();
+</script>
+
+<script>if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
+</body></html>
