@@ -168,7 +168,7 @@ header.top .hbtn{font-size:14px;opacity:.85;padding:6px 2px;white-space:nowrap}
 <section class="screen" id="start">
   <canvas class="bubbles" id="bubbles" aria-hidden="true"></canvas>
   <div class="sign"><small>오늘 회식은 어디로?</small>회식장소<br>픽!</div>
-  <div class="sub">9곳 중에 골라서 메뉴 주문까지 한 번에</div>
+  <div class="sub">10곳 중에 골라서 메뉴 주문까지 한 번에</div>
   <button class="tap" id="go">장소 고르러 가기</button>
 </section>
 
@@ -309,7 +309,7 @@ header.top .hbtn{font-size:14px;opacity:.85;padding:6px 2px;white-space:nowrap}
 </div>
 
 <script>
-const IMG = {"beer": "img/beer.jpg", "bulnori-0": "img/bulnori-0.jpg", "bulnori-1": "img/bulnori-1.jpg", "bulnori-2": "img/bulnori-2.jpg", "cider": "img/cider.jpg", "cola": "img/cola.jpg", "deunggalbi-0": "img/deunggalbi-0.jpg", "deunggalbi-1": "img/deunggalbi-1.jpg", "deunggalbi-2": "img/deunggalbi-2.jpg", "dolgopchang1-0": "img/dolgopchang1-0.jpg", "dolgopchang2-0": "img/dolgopchang2-0.jpg", "jangdaebak-0": "img/jangdaebak-0.jpg", "jangdaebak-1": "img/jangdaebak-1.jpg", "jangdaebak-2": "img/jangdaebak-2.jpg", "jangdaebak-3": "img/jangdaebak-3.jpg", "jangdaebak-4": "img/jangdaebak-4.jpg", "jokbal-0": "img/jokbal-0.jpg", "jokbal-1": "img/jokbal-1.jpg", "jokbal-2": "img/jokbal-2.jpg", "jokbal-3": "img/jokbal-3.jpg", "jokbal-4": "img/jokbal-4.jpg", "kkakdugi-0": "img/kkakdugi-0.jpg", "kkakdugi-1": "img/kkakdugi-1.jpg", "kkakdugi-2": "img/kkakdugi-2.jpg", "kkakdugi-3": "img/kkakdugi-3.jpg", "rep-bulnori": "img/rep-bulnori.jpg", "rep-deunggalbi": "img/rep-deunggalbi.jpg", "rep-dolgopchang": "img/rep-dolgopchang.jpg", "rep-jangdaebak": "img/rep-jangdaebak.jpg", "rep-jokbal": "img/rep-jokbal.jpg", "rep-kkakdugi": "img/rep-kkakdugi.jpg", "rep-saebyeok": "img/rep-saebyeok.jpg", "rep-shabu": "img/rep-shabu.jpg", "rep-yukogam": "img/rep-yukogam.jpg", "rep-yukogam2": "img/rep-yukogam2.jpg", "shabu-0": "img/shabu-0.jpg", "shabu-1": "img/shabu-1.jpg", "shabu-2": "img/shabu-2.jpg", "soju": "img/soju.jpg", "yukogam-0": "img/yukogam-0.jpg", "yukogam-1": "img/yukogam-1.jpg", "yukogam-2": "img/yukogam-2.jpg", "yukogam-3": "img/yukogam-3.jpg", "yukogam-4": "img/yukogam-4.jpg", "yukogam-5": "img/yukogam-5.jpg", "yukogam-6": "img/yukogam-6.jpg"};
+const IMG = {"bbq-0": "img/bbq-0.jpg", "bbq-1": "img/bbq-1.jpg", "bbq-10": "img/bbq-10.jpg", "bbq-11": "img/bbq-11.jpg", "bbq-2": "img/bbq-2.jpg", "bbq-3": "img/bbq-3.jpg", "bbq-4": "img/bbq-4.jpg", "bbq-5": "img/bbq-5.jpg", "bbq-6": "img/bbq-6.jpg", "bbq-7": "img/bbq-7.jpg", "bbq-8": "img/bbq-8.jpg", "bbq-9": "img/bbq-9.jpg", "beer": "img/beer.jpg", "bulnori-0": "img/bulnori-0.jpg", "bulnori-1": "img/bulnori-1.jpg", "bulnori-2": "img/bulnori-2.jpg", "cider": "img/cider.jpg", "cola": "img/cola.jpg", "deunggalbi-0": "img/deunggalbi-0.jpg", "deunggalbi-1": "img/deunggalbi-1.jpg", "deunggalbi-2": "img/deunggalbi-2.jpg", "dolgopchang1-0": "img/dolgopchang1-0.jpg", "dolgopchang2-0": "img/dolgopchang2-0.jpg", "jangdaebak-0": "img/jangdaebak-0.jpg", "jangdaebak-1": "img/jangdaebak-1.jpg", "jangdaebak-2": "img/jangdaebak-2.jpg", "jangdaebak-3": "img/jangdaebak-3.jpg", "jangdaebak-4": "img/jangdaebak-4.jpg", "jokbal-0": "img/jokbal-0.jpg", "jokbal-1": "img/jokbal-1.jpg", "jokbal-2": "img/jokbal-2.jpg", "jokbal-3": "img/jokbal-3.jpg", "jokbal-4": "img/jokbal-4.jpg", "kkakdugi-0": "img/kkakdugi-0.jpg", "kkakdugi-1": "img/kkakdugi-1.jpg", "kkakdugi-2": "img/kkakdugi-2.jpg", "kkakdugi-3": "img/kkakdugi-3.jpg", "rep-bbq": "img/rep-bbq.jpg", "rep-bulnori": "img/rep-bulnori.jpg", "rep-deunggalbi": "img/rep-deunggalbi.jpg", "rep-dolgopchang": "img/rep-dolgopchang.jpg", "rep-jangdaebak": "img/rep-jangdaebak.jpg", "rep-jokbal": "img/rep-jokbal.jpg", "rep-kkakdugi": "img/rep-kkakdugi.jpg", "rep-saebyeok": "img/rep-saebyeok.jpg", "rep-shabu": "img/rep-shabu.jpg", "rep-yukogam": "img/rep-yukogam.jpg", "rep-yukogam2": "img/rep-yukogam2.jpg", "shabu-0": "img/shabu-0.jpg", "shabu-1": "img/shabu-1.jpg", "shabu-2": "img/shabu-2.jpg", "soju": "img/soju.jpg", "yukogam-0": "img/yukogam-0.jpg", "yukogam-1": "img/yukogam-1.jpg", "yukogam-2": "img/yukogam-2.jpg", "yukogam-3": "img/yukogam-3.jpg", "yukogam-4": "img/yukogam-4.jpg", "yukogam-5": "img/yukogam-5.jpg", "yukogam-6": "img/yukogam-6.jpg"};
 const im = k => IMG[k] ? `<img src="${IMG[k]}" alt="">` : "";
 
 const PLACES = [
@@ -326,7 +326,32 @@ const PLACES = [
     {n:"불노리돼지막창 200g", d:"초벌돼지막창", p:15000, img:"bulnori-0", best:1},
     {n:"불노리소막창 200g", d:"초벌소막창", p:19000, img:"bulnori-1"},
     {n:"양념쫀득살 170g", d:"매콤달콤 양념 쫀득살", p:16000, img:"bulnori-2"}]},
-  {id:"saebyeok", n:"새벽시장", cat:"횟집", rep:"rep-saebyeok", sub:"싱싱한 회와 매운탕", note:"회는 시가라 메뉴판에 가격이 없어요. 상차림비는 회 주문 시 붙습니다.", menu:[
+  {id:"saebyeok", n:"새벽시장", cat:"횟집", rep:"rep-saebyeok", sub:"활어회·모둠세트·해산물", note:"활어는 1kg 기준 가격입니다. 감성돔·대방어·랍스타·킹크랩·산오징어는 싯가라 매장에 물어봐야 해요. 회를 주문하면 상차림비가 붙습니다.", menu:[
+    {sec:"모둠 세트"},
+    {n:"A세트 광어+참돔+도다리+연어", p:45000, opt:["小","中 +20000","大 +45000"], best:1},
+    {n:"B세트 광어+우럭 (1kg)", p:45000, best:1},
+    {n:"C세트 멍게+해삼+전복+개불", p:40000},
+    {n:"D세트 줄돔+쥐치", p:65000},
+    {n:"전어회+전어구이", d:"제철 전어 회와 구이 세트", p:50000},
+    {sec:"활어 (1kg)"},
+    {n:"광어", p:45000, unit:"kg"},
+    {n:"우럭", p:40000, unit:"kg"},
+    {n:"도미", p:50000, unit:"kg"},
+    {n:"농어", p:50000, unit:"kg"},
+    {n:"놀래미", p:45000, unit:"kg"},
+    {n:"쥐치", p:50000, unit:"kg"},
+    {n:"능성어", p:88000, unit:"kg"},
+    {n:"줄돔", p:68000, unit:"kg"},
+    {n:"아나고", p:40000, unit:"kg"},
+    {n:"생연어", d:"화·금요일 입고", p:30000, opt:["소","중 +10000","대 +20000"]},
+    {sec:"해산물"},
+    {n:"해삼", p:20000},
+    {n:"멍게 (자연산)", p:15000, opt:["소","대 +5000"]},
+    {n:"개불 (6마리)", p:20000},
+    {n:"전복", p:10000},
+    {n:"산낙지", p:18000},
+    {n:"소라", p:30000},
+    {n:"문어숙회", p:20000},
     {sec:"식사·요리"},
     {n:"물회", p:15000},
     {n:"회덮밥", p:7000},
@@ -337,7 +362,7 @@ const PLACES = [
     {n:"계란말이·찜", p:3000},
     {n:"치즈돈가스", p:6000},
     {sec:"탕"},
-    {n:"꽃게탕", p:30000, opt:["中","大 +15000"], best:1},
+    {n:"꽃게탕", p:30000, opt:["中","大 +15000"]},
     {n:"우럭통매운탕", p:25000, opt:["中","大 +15000"]},
     {n:"삼식이매운탕", p:30000},
     {n:"매운탕", d:"회 드신 후 서더리 매운탕", p:5000},
@@ -375,6 +400,19 @@ const PLACES = [
     {n:"앞발 족발 (대)", d:"먹으면 배불러서 '대'자로 뻗게 되는 앞발", p:49000, img:"jokbal-2"},
     {n:"반반족발 (중)", d:"족발+불족, 2~3인이 부담없이 즐길 수 있는 이중매력", p:48000, img:"jokbal-3", best:1},
     {n:"반반족발 (대)", d:"족발+불족 두 가지 맛을 한번에", p:60000, img:"jokbal-4"}]},
+  {id:"bbq", n:"BBQ치킨", cat:"치킨", rep:"rep-bbq", sub:"안성아양점 · 필크런치·황금올리브", menu:[
+    {n:"[NEW] 필크런치", d:"마지막 한입까지 바삭한 플레이크와 캐러멜라이즈 어니언", p:27000, img:"bbq-0", best:1},
+    {n:"[NEW] 필크런치 더블PICK세트", d:"필크런치 + 치킨한마리", p:46000, img:"bbq-1", best:1},
+    {n:"[NEW] 필크런치 트리플PICK세트", d:"필크런치 + 치킨반마리 + 치킨반마리", p:52000, img:"bbq-2", best:1},
+    {n:"뿜치킹", d:"한입 가득 퍼지는 네 가지 치즈의 풍미", p:25000, img:"bbq-3", best:1},
+    {n:"황금올리브치킨™", d:"황금빛 파우더의 바삭함과 육즙 가득한 속살", p:23000, img:"bbq-4", best:1},
+    {n:"황금올리브치킨™양념", d:"얇은 튀김옷에 사과퓨레·당근 등 천연재료 양념", p:24500, img:"bbq-5", best:1},
+    {n:"황올 반+BBQ양념 반", d:"겉바속촉 황금올리브치킨과 단맛 매력 BBQ 양념", p:24000, img:"bbq-6"},
+    {n:"[NEW] 필크런치 떡볶이 세트", d:"필크런치 + BBQ 떡볶이", p:34000, img:"bbq-7"},
+    {n:"[NEW] 필크런치 치즈볼 세트", d:"필크런치 + 황금알치즈볼", p:32000, img:"bbq-8"},
+    {n:"[NEW] 필크런치 소떡 세트", d:"필크런치 + BBQ소떡(자소만맛) + 볼케이노 핫소스", p:32000, img:"bbq-9"},
+    {n:"[NEW] 필크런치 소스 세트", d:"필크런치 + 볼케이노 핫소스", p:29000, img:"bbq-10"},
+    {n:"땡쇼크", d:"땡초의 강렬한 맛과 진한 숯불 향의 BBQ 특제 양념", p:25000, img:"bbq-11"}]},
 ];
 const DRINKS = [
   {n:"소주", d:"360ml 한 병", p:5000, img:"soju", opt:["처음처럼","참이슬","진로"]},
