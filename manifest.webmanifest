@@ -1,6 +1,6 @@
 {
- "name": "회식장소 픽",
- "short_name": "회식픽",
+ "name": "오늘은 뭐먹지",
+ "short_name": "오늘뭐먹지",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
